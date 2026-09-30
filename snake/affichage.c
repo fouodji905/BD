@@ -29,6 +29,20 @@ void affichage_carte(int taille_case)
             dessiner_contenu(p, taille_case);
 }
 
+/* Dessine le serpent : tete en jaune, corps en vert. */
+void affichage_serpent(const Serpent *s, int taille_case)
+{
+    Maillon *m = s->tete;
+
+    while (m != NULL) {
+        if (m == s->tete)
+            dessiner_case(m->position, taille_case, jaune);
+        else
+            dessiner_case(m->position, taille_case, vert);
+        m = m->suivant;
+    }
+}
+
 /* Dessine le contenu d'une case de la carte. */
 static void dessiner_contenu(Position p, int taille_case)
 {

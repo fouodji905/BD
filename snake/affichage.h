@@ -2,6 +2,7 @@
 #define AFFICHAGE_H
 
 #include "carte.h"
+#include "serpent.h"
 
 /* Taille approximative (en pixels) de la zone de jeu a l'ecran. */
 #define TAILLE_FENETRE 600
@@ -12,5 +13,8 @@ int affichage_ouvrir(int taille_carte);
 
 /* Dessine toute la carte (fond, murs, fruits). */
 void affichage_carte(int taille_case);
+
+/* Dessine le serpent : tete en jaune, corps en vert. */
+void affichage_serpent(const Serpent *s, int taille_case);
 
 #endif
