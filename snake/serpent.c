@@ -2,6 +2,9 @@
 
 #include "serpent.h"
 
+/* Prototypes des fonctions internes au module. */
+static int sont_opposees(Direction a, Direction b);
+
 /* Cree un serpent horizontal de la longueur donnee, tete a droite,
    qui part vers la droite. Renvoie 0 si la memoire manque. */
 int serpent_creer(Serpent *s, Position tete, int longueur)
@@ -84,4 +87,46 @@ int serpent_contient(const Serpent *s, Position p)
         m = m->suivant;
     }
     return trouve;
+}
+
+/* Renvoie la case ou arrivera la tete au prochain pas. Si elle sort
+   de la carte, elle reapparait du cote oppose. */
+Position serpent_case_suivante(const Serpent *s)
+{
+    Position p = serpent_tete(s);
+    int n = carte_taille();
+
+    if (s->direction == HAUT)
+        p.ligne = (p.ligne - 1 + n) % n;
+    else if (s->direction == BAS)
+        p.ligne = (p.ligne + 1) % n;
+    else if (s->direction == GAUCHE)
+        p.colonne = (p.colonne - 1 + n) % n;
+    else
+        p.colonne = (p.colonne + 1) % n;
+    return p;
+}
+
+/* Change la direction du serpent, sauf si c'est un demi-tour. */
+void serpent_changer_direction(Serpent *s, Direction d)
+{
+    if (!sont_opposees(s->direction, d))
+        s->direction = d;
+}
+
+/* Fait avancer le serpent d'une case. Renvoie 0 si echec memoire. */
+int serpent_avancer(Serpent *s)
+{
+    int ok = serpent_ajouter_tete(s, serpent_case_suivante(s));
+
+    if (ok)
+        serpent_retirer_queue(s);
+    return ok;
+}
+
+/* Renvoie 1 si les deux directions sont opposees (demi-tour). */
+static int sont_opposees(Direction a, Direction b)
+{
+    return (a == HAUT && b == BAS) || (a == BAS && b == HAUT)
+        || (a == GAUCHE && b == DROITE) || (a == DROITE && b == GAUCHE);
 }

@@ -4,6 +4,7 @@
 #include "carte.h"
 #include "serpent.h"
 #include "affichage.h"
+#include "jeu.h"
 #include "graphics.h"
 
 /* Prototypes des fonctions de ce fichier. */
@@ -13,6 +14,7 @@ int main(int argc, char *argv[])
 {
     int taille = lire_taille(argc, argv);
     int taille_case;
+    int en_cours = 1;
     Position fruit_test, depart;
     Serpent serpent;
 
@@ -37,12 +39,17 @@ int main(int argc, char *argv[])
     }
 
     taille_case = affichage_ouvrir(taille);
-    affichage_carte(taille_case);
-    affichage_serpent(&serpent, taille_case);
-    affiche_all();
 
-    /* Appuyer sur Echap pour fermer la fenetre. */
-    wait_escape();
+    /* Boucle de jeu : clavier, deplacement, dessin, pause.
+       (La touche Echap quitte le programme via get_arrow.) */
+    while (en_cours) {
+        jeu_lire_clavier(&serpent);
+        en_cours = jeu_tour(&serpent);
+        affichage_carte(taille_case);
+        affichage_serpent(&serpent, taille_case);
+        affiche_all();
+        attendre(DELAI_TOUR);
+    }
     serpent_detruire(&serpent);
     carte_detruire();
     return EXIT_SUCCESS;

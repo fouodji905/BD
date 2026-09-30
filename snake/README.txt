@@ -11,6 +11,7 @@ Organisation du code
   carte.c/.h      Module Carte : le tableau du jeu (murs, fruits).
                   C'est la seule variable globale du programme.
   serpent.c/.h    Module Snake : file en liste doublement chainee + direction.
+  jeu.c/.h        Module GameLogic : clavier, tour de jeu.
   affichage.c/.h  Module Graphique : dessin de la carte et du serpent.
   main.c          Lecture de la taille et boucle principale.
   graphics.c/.h   Bibliotheque graphique fournie en cours (SDL 1.2).
@@ -19,7 +20,7 @@ Avancement (brique par brique)
 ------------------------------
   [x] Brique 1 : structure du projet, Makefile, carte dynamique, affichage
   [x] Brique 2 : module Snake (file en liste chainee) + affichage du serpent
-  [ ] Brique 3 : deplacement au clavier + traversee des bords
+  [x] Brique 3 : deplacement au clavier + traversee des bords
   [ ] Brique 4 : fruits (placement aleatoire, croissance de 1)
   [ ] Brique 5 : collisions (murs, queue) et fin de partie
   [ ] Brique 6 : bonus (score, fruits speciaux, carte depuis un fichier...)

@@ -40,4 +40,14 @@ Position serpent_tete(const Serpent *s);
 /* Renvoie 1 si le serpent occupe la case p, 0 sinon. */
 int serpent_contient(const Serpent *s, Position p);
 
+/* Renvoie la case ou arrivera la tete au prochain pas. Si elle sort
+   de la carte, elle reapparait du cote oppose. */
+Position serpent_case_suivante(const Serpent *s);
+
+/* Change la direction du serpent, sauf si c'est un demi-tour. */
+void serpent_changer_direction(Serpent *s, Direction d);
+
+/* Fait avancer le serpent d'une case. Renvoie 0 si echec memoire. */
+int serpent_avancer(Serpent *s);
+
 #endif

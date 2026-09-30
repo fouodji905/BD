@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-O2 -Wall -Wextra `sdl-config --cflags`
 LIBS=`sdl-config --libs` -lm -lSDL_ttf
 
-OBJS=main.o carte.o serpent.o affichage.o graphics.o
+OBJS=main.o carte.o serpent.o jeu.o affichage.o graphics.o
 
 .PHONY: all clean
 all: snake
@@ -10,7 +10,7 @@ all: snake
 snake: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LIBS)
 
-main.o: main.c carte.h serpent.h affichage.h graphics.h couleur.h
+main.o: main.c carte.h serpent.h jeu.h affichage.h graphics.h couleur.h
 	$(CC) $(CFLAGS) -c main.c
 
 carte.o: carte.c carte.h
@@ -18,6 +18,9 @@ carte.o: carte.c carte.h
 
 serpent.o: serpent.c serpent.h carte.h
 	$(CC) $(CFLAGS) -c serpent.c
+
+jeu.o: jeu.c jeu.h serpent.h carte.h graphics.h
+	$(CC) $(CFLAGS) -c jeu.c
 
 affichage.o: affichage.c affichage.h carte.h serpent.h graphics.h couleur.h
 	$(CC) $(CFLAGS) -c affichage.c
