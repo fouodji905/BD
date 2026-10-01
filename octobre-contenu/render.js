@@ -36,7 +36,7 @@ const fs = require("fs");
           ${s[2] ? `<span class="ref">${esc(s[2])}</span>` : ""}
           <div class="big">${esc(s[0])}</div>
           ${s[1] ? `<div class="small">${esc(s[1])}</div>` : ""}
-          <span class="handle">@lumiere.du.jour</span>
+          <span class="handle">@fdnhightech</span>
           ${p.f === "carrousel" && i < n - 1 ? `<span class="swipe">Glisse →</span>` : ""}
         </div>`;
       }, { p, i, n });
