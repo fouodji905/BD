@@ -1,0 +1,488 @@
+<title>Lumière d'Octobre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout : calendrier du mois à gauche, aperçu du carrousel (format 4:5 Instagram) à droite ; une seule colonne sur téléphone */
+:root {
+  --bg: #eef0f5;
+  --surface: #ffffff;
+  --ink: #1b1f33;
+  --muted: #5d6380;
+  --line: #d7dbe8;
+  --accent: #a8741a;
+  --accent-soft: #f6ecd8;
+  --sel: #1b1f33;
+  --sel-ink: #ffffff;
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11131f; --surface: #1a1d2d; --ink: #e9eaf2; --muted: #9da2bd; --line: #2c3047;
+    --accent: #e0b25a; --accent-soft: #2e2818; --sel: #e0b25a; --sel-ink: #11131f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11131f; --surface: #1a1d2d; --ink: #e9eaf2; --muted: #9da2bd; --line: #2c3047;
+  --accent: #e0b25a; --accent-soft: #2e2818; --sel: #e0b25a; --sel-ink: #11131f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.1rem; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+
+header { display: grid; gap: 12px; max-width: 70ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 28px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+
+/* Calendrier */
+.cal { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+.cal-head, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal-head div { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.day { min-height: 78px; border-radius: 9px; padding: 6px; display: flex; flex-direction: column; gap: 4px; font: inherit; color: inherit; text-align: left; background: transparent; border: 1px solid transparent; }
+.day .n { font-family: var(--font-mono); font-size: .78rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+.day.has { background: var(--bg); border-color: var(--line); cursor: pointer; }
+.day.has:hover { border-color: var(--accent); }
+.day.has:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.day.on { background: var(--sel); border-color: var(--sel); color: var(--sel-ink); }
+.day.on .n { color: var(--sel-ink); }
+.day .t { font-size: .74rem; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+.day.today .n::after { content: " · auj."; color: var(--accent); }
+.day.on.today .n::after { color: var(--sel-ink); }
+@media (max-width: 560px) {
+  .day { min-height: 54px; padding: 5px 4px; }
+  .day .t { display: none; }
+}
+
+.weeks { display: grid; gap: 8px; padding-top: 6px; border-top: 1px solid var(--line); }
+.week { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 10px; font-size: .88rem; }
+.week b { font-family: var(--font-mono); font-weight: 500; font-size: .74rem; color: var(--accent); padding-top: 2px; }
+
+/* Aperçu */
+.preview { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+@media (max-width: 860px) { .preview { position: static; } }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { font-size: .74rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--accent-soft); color: var(--ink); }
+
+.phone { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px; display: grid; gap: 10px; }
+.acct { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: .86rem; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 50% 60%, #ffd77a 0 22%, #c47f12 23% 30%, #1b1f33 31%); flex: none; }
+.stage { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 10px; overflow: hidden; }
+.track { display: flex; height: 100%; transition: transform .5s ease; }
+.slide { flex: 0 0 100%; height: 100%; padding: 11% 10%; display: flex; flex-direction: column; justify-content: center; gap: 14px; position: relative; color: #fff; }
+.slide .big { font-family: var(--font-display); font-size: clamp(1.35rem, 6.2vw, 1.9rem); line-height: 1.18; text-wrap: balance; }
+.slide .small { font-size: clamp(.86rem, 3.6vw, 1rem); line-height: 1.45; opacity: .92; max-width: 32ch; }
+.slide .ref { font-family: var(--font-mono); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+.slide .count { position: absolute; top: 12px; right: 12px; font-family: var(--font-mono); font-size: .68rem; background: rgba(0,0,0,.35); padding: 2px 8px; border-radius: 99px; }
+.slide .swipe { position: absolute; bottom: 14px; right: 16px; font-size: .74rem; opacity: .8; }
+.nav { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.88); color: #1b1f33; font-size: 1.05rem; cursor: pointer; display: grid; place-items: center; }
+.nav:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.nav.prev { left: 8px; } .nav.next { right: 8px; }
+.dots { display: flex; justify-content: center; gap: 5px; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.btn { font: inherit; font-size: .84rem; font-weight: 600; padding: 7px 13px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.caption { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; font-size: .9rem; }
+.caption pre { margin: 0; white-space: pre-wrap; font-family: var(--font-body); }
+.caption .tags { color: var(--accent); font-weight: 600; overflow-wrap: anywhere; }
+.row { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; font-size: .86rem; }
+.row b { font-weight: 600; color: var(--muted); }
+
+/* Fonds des visuels : une ambiance par thème, sans visage */
+.bg-aube { background: linear-gradient(160deg, #f2a65a 0%, #c45a6a 55%, #3b2a5c 100%); }
+.bg-nuit { background: radial-gradient(circle at 70% 20%, #3c4f8f 0%, #1a2142 55%, #0d1022 100%); }
+.bg-foret { background: linear-gradient(170deg, #5c8a4f 0%, #2d5a45 55%, #16302a 100%); }
+.bg-rose { background: linear-gradient(160deg, #e889a8 0%, #b5466f 60%, #5b1c3b 100%); }
+.bg-or { background: linear-gradient(165deg, #d9a441 0%, #8f5a17 60%, #3d2608 100%); }
+.bg-mer { background: linear-gradient(170deg, #4fa3b8 0%, #23607a 55%, #102a3d 100%); }
+.bg-bougie { background: radial-gradient(circle at 50% 78%, #ffcf6b 0 3%, #e0892b 8%, #5a2d10 30%, #160c08 70%); }
+
+/* Conseils */
+.tips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .tips { grid-template-columns: minmax(0, 1fr); } }
+.tip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.tip ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: .9rem; }
+footer { font-size: .82rem; color: var(--muted); max-width: 75ch; }
+
+@media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Plan de contenu · Octobre 2026</span>
+    <h1>Lumière d'Octobre</h1>
+    <p class="muted">15 publications pour sensibiliser sans montrer ton visage : des carrousels à faire défiler, des reels en texte animé et des stories. Clique sur un jour du calendrier pour voir les images défiler, avec la légende prête à copier.</p>
+    <div class="legend" id="legend"></div>
+  </header>
+
+  <div class="main">
+    <section class="cal" aria-label="Calendrier d'octobre 2026">
+      <div class="cal-head"><div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div></div>
+      <div class="cal-grid" id="grid"></div>
+      <div class="weeks">
+        <div class="week"><b>1–4 oct.</b><span>Recommencer : un nouveau mois, la petite voie, la création.</span></div>
+        <div class="week"><b>5–11 oct.</b><span>Prier et prendre soin de soi : prière, santé mentale (10 oct.), dignité des filles (11 oct.).</span></div>
+        <div class="week"><b>12–18 oct.</b><span>Partager : étudiants, alimentation (16 oct.), pauvreté (17 oct.), dimanche des missions (18 oct.).</span></div>
+        <div class="week"><b>19–25 oct.</b><span>Nos paroles et nos corps : réseaux sociaux, Octobre rose, gratitude.</span></div>
+        <div class="week"><b>26–31 oct.</b><span>Pardonner et faire le bilan avant la Toussaint.</span></div>
+      </div>
+    </section>
+
+    <section class="preview" aria-live="polite">
+      <div class="meta" id="meta"></div>
+      <h2 id="ptitle"></h2>
+      <div class="phone">
+        <div class="acct"><span class="avatar" aria-hidden="true"></span><span>@lumiere.du.jour</span></div>
+        <div class="stage">
+          <div class="track" id="track"></div>
+          <button class="nav prev" id="prev" aria-label="Image précédente">‹</button>
+          <button class="nav next" id="next" aria-label="Image suivante">›</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="controls">
+          <button class="btn" id="play">Pause</button>
+          <span class="muted" style="font-size:.8rem">Défilement auto toutes les 4 s</span>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="controls"><b>Légende</b><button class="btn" id="copy">Copier la légende</button></div>
+        <pre id="cap"></pre>
+        <div class="tags" id="tags"></div>
+        <div class="row"><b>Visuel</b><span id="visual"></span></div>
+        <div class="row"><b>Heure</b><span id="hour"></span></div>
+      </div>
+    </section>
+  </div>
+
+  <section style="display:grid;gap:14px">
+    <h2>Rester anonyme et tenir le rythme</h2>
+    <div class="tips">
+      <div class="tip">
+        <h3>Filmer sans visage</h3>
+        <ul>
+          <li>Tes mains : qui ouvrent une Bible, allument une bougie, écrivent dans un carnet.</li>
+          <li>Le ciel, une route, une fenêtre, une tasse de café : des plans calmes de 5 à 8 s.</li>
+          <li>Du texte qui apparaît ligne par ligne sur un fond uni ou flou.</li>
+          <li>Ta voix off, ou une voix de synthèse si tu préfères ne pas parler.</li>
+          <li>Évite les reflets (vitres, lunettes) et tout ce qui révèle ton école ou ton quartier.</li>
+        </ul>
+      </div>
+      <div class="tip">
+        <h3>Outils gratuits</h3>
+        <ul>
+          <li>Canva : modèle carré 1080 × 1350 px pour les carrousels. Recopie les textes de cette page.</li>
+          <li>CapCut : texte animé, sous-titres auto, musique libre de droits.</li>
+          <li>Pexels et Unsplash : vidéos et photos gratuites de paysages et de mains.</li>
+          <li>Garde une seule police et 2 ou 3 couleurs : ton compte devient reconnaissable sans visage.</li>
+        </ul>
+      </div>
+      <div class="tip">
+        <h3>Routine d'étudiant (2 h par semaine)</h3>
+        <ul>
+          <li>Dimanche soir : crée les 3 ou 4 posts de la semaine d'un coup.</li>
+          <li>Programme-les avec Meta Business Suite (Instagram + Facebook) ou l'outil de TikTok.</li>
+          <li>Après chaque post : 15 min pour répondre aux commentaires, avec bienveillance.</li>
+          <li>Fin du mois : regarde quels posts ont été le plus enregistrés et refais ce format en novembre.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>Versets cités d'après la Bible Louis Segond (numérotation française). Les dates de fêtes suivent le calendrier catholique et les journées mondiales de l'ONU et de l'OMS ; adapte les thèmes à ta communauté. Pour les posts sur la santé mentale et Octobre rose, rappelle toujours qu'en cas de besoin il faut parler à un proche, un médecin ou un service d'urgence.</footer>
+</div>
+
+<script>
+const FORMATS = {
+  carrousel: { label: "Carrousel", color: "#c9952e" },
+  reel: { label: "Reel texte animé", color: "#4f7fd1" },
+  story: { label: "Story interactive", color: "#c25a86" }
+};
+
+const POSTS = [
+  { d: 1, f: "carrousel", bg: "bg-aube", title: "Octobre, un nouveau départ", hour: "19 h",
+    visual: "Lever de soleil filmé depuis ta fenêtre, tes mains autour d'une tasse.",
+    slides: [
+      ["Octobre commence aujourd'hui.", "Et si ce mois devenait un nouveau départ ?"],
+      ["Tu n'as pas besoin d'avoir tout réussi en septembre.", "Dieu ne te demande pas d'être parfait, il te demande de revenir."],
+      ["« Ses compassions ne sont pas à leur terme ; elles se renouvellent chaque matin. »", "", "Lamentations 3:22-23"],
+      ["Ce mois-ci, ici :", "un message chaque semaine sur la foi, la prière, le partage et le soin de soi."],
+      ["Enregistre ce post.", "Relis-le le 31 octobre pour voir le chemin parcouru."]
+    ],
+    cap: "Nouveau mois, nouvelle page. 🌅\nCe compte parle de foi sans visage et sans jugement. Ce mois-ci : un thème par semaine pour grandir ensemble.\n\nQuel est ton souhait pour octobre ? Écris-le en commentaire 👇",
+    tags: "#octobre #nouveaudepart #foi #chretien #encouragement #versetdujour" },
+
+  { d: 3, f: "reel", bg: "bg-rose", title: "La petite voie de sainte Thérèse", hour: "12 h",
+    visual: "Gros plan sur des gestes simples : plier un vêtement, servir un verre d'eau, ranger un livre.",
+    slides: [
+      ["Thérèse de Lisieux est morte à 24 ans.", "Elle n'a rien fait de spectaculaire."],
+      ["Son secret : la « petite voie ».", "Faire les petites choses avec un grand amour."],
+      ["« Aimer, c'est tout donner et se donner soi-même. »", "", "Sainte Thérèse (fêtée le 1er octobre)"],
+      ["Défi du jour :", "un petit geste caché pour quelqu'un. Personne n'a besoin de le savoir."]
+    ],
+    cap: "Pas besoin d'être célèbre pour être saint. ✨\nUn sourire, un service rendu, une parole douce : c'est déjà beaucoup.\n\nQuel petit geste vas-tu faire aujourd'hui ?",
+    tags: "#saintetherese #petitevoie #foi #catholique #amour #defi" },
+
+  { d: 4, f: "carrousel", bg: "bg-foret", title: "Prendre soin de la création", hour: "18 h",
+    visual: "Feuilles d'automne, arbres, ta main qui ramasse un déchet.",
+    slides: [
+      ["Le 4 octobre, on fête saint François d'Assise.", "L'ami des pauvres et de la création."],
+      ["« La terre est à l'Éternel et tout ce qu'elle renferme. »", "", "Psaume 24:1"],
+      ["Prendre soin de la planète, c'est aussi prier avec ses mains.", ""],
+      ["3 gestes simples cette semaine :", "une gourde au lieu d'une bouteille · éteindre ce qui ne sert pas · ramasser un déchet"],
+      ["Lequel tu choisis ?", "Dis-le en commentaire."]
+    ],
+    cap: "La création est un cadeau. 🌿 Saint François l'appelait « notre sœur la Terre ».\n\nChoisis un geste cette semaine et reviens nous dire comment ça s'est passé.",
+    tags: "#saintfrancois #creation #ecologie #foi #laudatosi #automne" },
+
+  { d: 7, f: "carrousel", bg: "bg-nuit", title: "Prier quand on ne sait pas quoi dire", hour: "21 h",
+    visual: "Bougie allumée la nuit, chapelet ou Bible posés sur une table.",
+    slides: [
+      ["Tu veux prier mais les mots ne viennent pas ?", "C'est normal. Tout le monde passe par là."],
+      ["« L'Esprit nous aide dans notre faiblesse, car nous ne savons pas ce qu'il nous convient de demander. »", "", "Romains 8:26"],
+      ["Méthode simple en 3 mots :", "Merci (pour ce que j'ai reçu) · Pardon (pour ce que j'ai raté) · S'il te plaît (pour ce dont j'ai besoin)"],
+      ["Octobre est le mois du Rosaire.", "Une dizaine prend 5 minutes, même dans le bus."],
+      ["Le silence aussi est une prière.", "Assieds-toi 2 minutes et écoute."]
+    ],
+    cap: "Prier, ce n'est pas faire de beaux discours. 🕯️\nEssaie ce soir : Merci, Pardon, S'il te plaît.\n\nEnvoie ce post à quelqu'un qui a du mal à prier en ce moment.",
+    tags: "#priere #rosaire #moisdurosaire #foi #chretien #spiritualite" },
+
+  { d: 10, f: "carrousel", bg: "bg-mer", title: "Tu n'es pas seul", hour: "19 h",
+    visual: "Mer ou pluie sur une vitre, puis rayon de soleil qui perce.",
+    slides: [
+      ["10 octobre : Journée mondiale de la santé mentale.", "Parlons-en sans honte."],
+      ["Être croyant ne veut pas dire ne jamais être triste ou anxieux.", "Même les psaumes sont pleins de larmes."],
+      ["« L'Éternel est près de ceux qui ont le cœur brisé. »", "", "Psaume 34:19"],
+      ["Prier ET demander de l'aide, ce n'est pas contradictoire.", "Parle à un ami, un parent, un responsable, un professionnel."],
+      ["Si tu vas mal aujourd'hui :", "tu comptes. Écris à quelqu'un maintenant. En cas de danger, appelle les urgences."]
+    ],
+    cap: "Ta valeur ne dépend pas de ton humeur. 💙\nAujourd'hui, prends des nouvelles de quelqu'un, vraiment.\n\nIdentifie un ami à qui tu veux dire : « je suis là pour toi ».",
+    tags: "#santementale #journeemondialedelasantementale #tunespasseul #foi #espoir #psaumes" },
+
+  { d: 11, f: "reel", bg: "bg-rose", title: "Créée merveilleuse", hour: "17 h",
+    visual: "Silhouette de dos face à la mer, mains qui tiennent des fleurs.",
+    slides: [
+      ["11 octobre : Journée internationale de la fille.", ""],
+      ["« Je te loue de ce que je suis une créature si merveilleuse. »", "", "Psaume 139:14"],
+      ["Ta valeur ne vient ni des likes, ni des filtres, ni du regard des autres.", ""],
+      ["Elle vient de Celui qui t'a créée.", "Partage à une fille qui doit l'entendre aujourd'hui."]
+    ],
+    cap: "À toutes les filles : vous êtes précieuses. 🌸\nIdentifie une sœur, une amie, une cousine.",
+    tags: "#journeedelafille #psaume139 #valeur #foi #confiance #femmes" },
+
+  { d: 14, f: "reel", bg: "bg-or", title: "Étudiant et croyant", hour: "20 h",
+    visual: "Ton bureau vu de haut : cahiers, stylo, ordinateur, lampe.",
+    slides: [
+      ["Cours, devoirs, partiels, pression…", "Tu te sens dépassé ?"],
+      ["« Fortifie-toi et prends courage. Ne t'effraie point, car l'Éternel ton Dieu est avec toi. »", "", "Josué 1:9"],
+      ["Avant de réviser :", "une minute de prière, puis 25 minutes de travail sans téléphone."],
+      ["Fais ta part. Confie le reste.", ""]
+    ],
+    cap: "Message à tous les étudiants. 📚\nDieu ne remplace pas les révisions, mais il marche avec toi pendant.\n\nTu étudies quoi ? Je prie pour toi.",
+    tags: "#etudiant #examens #revisions #foi #josue19 #courage" },
+
+  { d: 16, f: "carrousel", bg: "bg-or", title: "J'avais faim", hour: "12 h",
+    visual: "Mains qui partagent un pain ou servent une assiette.",
+    slides: [
+      ["16 octobre : Journée mondiale de l'alimentation.", ""],
+      ["Des millions de personnes ne mangent pas à leur faim.", "Parfois tout près de chez nous."],
+      ["« J'avais faim, et vous m'avez donné à manger. »", "", "Matthieu 25:35"],
+      ["Ce que tu peux faire, même étudiant :", "partager ton repas · donner à une banque alimentaire · ne pas gaspiller"],
+      ["Bénir, c'est aussi partager.", ""]
+    ],
+    cap: "Avant de manger aujourd'hui, pense à quelqu'un qui n'a rien. 🍞\nUn geste petit, un impact réel.",
+    tags: "#journeemondialedelalimentation #partage #faim #foi #charite #matthieu25" },
+
+  { d: 17, f: "story", bg: "bg-nuit", title: "Aider le pauvre", hour: "18 h",
+    visual: "Story avec sondage, puis un verset sur fond sombre.",
+    slides: [
+      ["17 octobre : Journée mondiale du refus de la misère.", ""],
+      ["Sondage : as-tu déjà aidé quelqu'un dans la rue ?", "Oui · Pas encore"],
+      ["« Celui qui a pitié du pauvre prête à l'Éternel. »", "", "Proverbes 19:17"],
+      ["Question : quel est le plus petit geste qui t'a aidé un jour ?", "(Boîte à questions)"]
+    ],
+    cap: "Story du jour : réponds au sondage et à la question. Je partagerai vos réponses (anonymes) demain.",
+    tags: "#pauvrete #solidarite #proverbes #foi" },
+
+  { d: 18, f: "carrousel", bg: "bg-aube", title: "La mission commence chez toi", hour: "11 h",
+    visual: "Lampe allumée dans une pièce sombre, porte qui s'ouvre sur la lumière.",
+    slides: [
+      ["Aujourd'hui : dimanche des missions.", ""],
+      ["« Vous êtes la lumière du monde. »", "", "Matthieu 5:14"],
+      ["Pas besoin de partir loin.", "Ta famille, ta classe, tes amis : c'est ton champ de mission."],
+      ["Être lumière, c'est :", "écouter · encourager · rester honnête · aimer même quand c'est difficile"],
+      ["Et toi, où vas-tu briller cette semaine ?", ""]
+    ],
+    cap: "La foi ne se garde pas dans un tiroir. 💡\nCe compte est ma petite mission. Quelle est la tienne ?",
+    tags: "#dimanchedesmissions #lumieredumonde #mission #foi #chretien #dimanche" },
+
+  { d: 21, f: "carrousel", bg: "bg-mer", title: "Nos paroles en ligne", hour: "19 h",
+    visual: "Écran de téléphone flou, pouces qui tapent un message.",
+    slides: [
+      ["Un commentaire méchant prend 3 secondes à écrire.", "Il peut blesser pendant des années."],
+      ["« Qu'il ne sorte de votre bouche aucune parole mauvaise, mais quelque bonne parole qui édifie. »", "", "Éphésiens 4:29"],
+      ["Avant de publier, demande-toi :", "Est-ce vrai ? Est-ce utile ? Est-ce bienveillant ?"],
+      ["Le cyberharcèlement n'est jamais une blague.", "Si tu le vis : garde des captures, bloque, parles-en à un adulte."],
+      ["Laisse un commentaire positif sous 3 posts aujourd'hui.", ""]
+    ],
+    cap: "Et si on rendait les réseaux plus doux ? 📱\nDéfi : 3 commentaires encourageants aujourd'hui.",
+    tags: "#cyberharcelement #bienveillance #reseauxsociaux #foi #ephesiens #paroles" },
+
+  { d: 23, f: "reel", bg: "bg-rose", title: "Octobre rose", hour: "18 h",
+    visual: "Ruban rose, fleurs, mains qui se tiennent.",
+    slides: [
+      ["Octobre rose : le mois de la lutte contre le cancer du sein.", ""],
+      ["« Ne savez-vous pas que votre corps est le temple du Saint-Esprit ? »", "", "1 Corinthiens 6:19"],
+      ["Prendre soin de son corps, c'est respecter un cadeau de Dieu.", "Encourage ta mère, tes tantes, tes sœurs à se faire dépister."],
+      ["Et prions pour toutes les personnes malades et leurs familles.", ""]
+    ],
+    cap: "En rose ce mois-ci pour celles qui se battent. 🎀\nUn dépistage peut sauver une vie. Renseigne-toi auprès d'un centre de santé.",
+    tags: "#octobrerose #cancerdusein #depistage #foi #priere #sante" },
+
+  { d: 25, f: "story", bg: "bg-or", title: "Trois mercis", hour: "20 h",
+    visual: "Carnet ouvert où tu écris à la main, fond chaud.",
+    slides: [
+      ["« Rendez grâces en toutes choses. »", "", "1 Thessaloniciens 5:18"],
+      ["Défi : écris 3 choses pour lesquelles tu dis merci aujourd'hui.", "(Boîte à questions)"],
+      ["Mes 3 mercis :", "ma famille · la santé · vous qui me suivez"]
+    ],
+    cap: "Story gratitude : répondez avec vos 3 mercis, je les repartage sans vos noms.",
+    tags: "#gratitude #merci #foi #dimanche" },
+
+  { d: 28, f: "reel", bg: "bg-bougie", title: "Pardonner pour avancer", hour: "21 h",
+    visual: "Bougie qui s'allume, papier froissé puis déplié.",
+    slides: [
+      ["Pardonner ne veut pas dire que ce n'était pas grave.", ""],
+      ["Ça veut dire : je ne laisse plus cette blessure diriger ma vie.", ""],
+      ["« Comme le Seigneur vous a pardonné, pardonnez-vous aussi. »", "", "Colossiens 3:13"],
+      ["Le pardon est un chemin, pas un bouton.", "Commence par prier pour la personne. C'est déjà un pas."]
+    ],
+    cap: "Le pardon libère d'abord celui qui pardonne. 🕊️\nEnregistre ce reel pour le jour où tu en auras besoin.",
+    tags: "#pardon #guerison #foi #colossiens #paix #chretien" },
+
+  { d: 31, f: "carrousel", bg: "bg-nuit", title: "Bilan du mois", hour: "19 h",
+    visual: "Montage de tes plus beaux plans du mois, ciel étoilé à la fin.",
+    slides: [
+      ["Octobre se termine.", "Merci d'avoir marché avec nous."],
+      ["Ce qu'on a vécu :", "nouveau départ · prière · santé mentale · partage · mission · pardon"],
+      ["Demain, c'est la Toussaint.", "Les saints ne sont pas parfaits : ce sont des gens qui ont continué d'aimer."],
+      ["« Nous sommes environnés d'une si grande nuée de témoins. »", "", "Hébreux 12:1"],
+      ["Relis ton souhait du 1er octobre.", "Qu'est-ce qui a changé ? Novembre arrive, on continue."]
+    ],
+    cap: "Merci pour ce mois. 🙏\nQuel post t'a le plus touché ? Dis-le moi pour préparer novembre.",
+    tags: "#bilan #toussaint #saints #foi #gratitude #novembre" }
+];
+
+const $ = (id) => document.getElementById(id);
+let cur = null, idx = 0, playing = true, timer = null;
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduce) playing = false;
+
+// Légende des formats
+$("legend").innerHTML = Object.values(FORMATS).map(f => `<span><i class="dot" style="background:${f.color}"></i>${f.label}</span>`).join("");
+
+// Calendrier : le 1er octobre 2026 tombe un jeudi (3 cases vides avant)
+const today = new Date();
+const isOct = today.getFullYear() === 2026 && today.getMonth() === 9;
+const grid = $("grid");
+for (let i = 0; i < 3; i++) grid.insertAdjacentHTML("beforeend", "<div></div>");
+for (let d = 1; d <= 31; d++) {
+  const p = POSTS.find(x => x.d === d);
+  const cls = ["day", p ? "has" : "", isOct && today.getDate() === d ? "today" : ""].join(" ");
+  if (p) {
+    grid.insertAdjacentHTML("beforeend",
+      `<button class="${cls}" data-d="${d}" aria-label="${d} octobre : ${p.title}"><span class="n">${d}</span><i class="dot" style="background:${FORMATS[p.f].color}"></i><span class="t">${p.title}</span></button>`);
+  } else {
+    grid.insertAdjacentHTML("beforeend", `<div class="${cls}"><span class="n">${d}</span></div>`);
+  }
+}
+grid.addEventListener("click", e => {
+  const b = e.target.closest("button[data-d]");
+  if (b) select(+b.dataset.d);
+});
+
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+function select(d) {
+  cur = POSTS.find(x => x.d === d);
+  idx = 0;
+  document.querySelectorAll(".day.on").forEach(el => el.classList.remove("on"));
+  const btn = grid.querySelector(`[data-d="${d}"]`);
+  if (btn) btn.classList.add("on");
+  const wd = new Date(2026, 9, d).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  $("meta").innerHTML = `<span class="eyebrow">${wd}</span><span class="chip">${FORMATS[cur.f].label}</span><span class="chip">${cur.slides.length} images</span>`;
+  $("ptitle").textContent = cur.title;
+  const n = cur.slides.length;
+  $("track").innerHTML = cur.slides.map((s, i) => `
+    <div class="slide ${cur.bg}" aria-roledescription="image" aria-label="${i + 1} sur ${n}">
+      <span class="count">${i + 1}/${n}</span>
+      ${s[2] ? `<span class="ref">${esc(s[2])}</span>` : ""}
+      <div class="big">${esc(s[0])}</div>
+      ${s[1] ? `<div class="small">${esc(s[1])}</div>` : ""}
+      ${i < n - 1 ? `<span class="swipe">Glisse →</span>` : ""}
+    </div>`).join("");
+  $("cap").textContent = cur.cap;
+  $("tags").textContent = cur.tags;
+  $("visual").textContent = cur.visual;
+  $("hour").textContent = cur.hour + " (heure locale, quand ton audience est en ligne)";
+  go(0);
+  restart();
+}
+
+function go(i) {
+  const n = cur.slides.length;
+  idx = (i + n) % n;
+  $("track").style.transform = `translateX(-${idx * 100}%)`;
+  $("dots").innerHTML = cur.slides.map((_, k) => `<i class="${k === idx ? "on" : ""}"></i>`).join("");
+}
+function restart() {
+  clearInterval(timer);
+  if (playing) timer = setInterval(() => go(idx + 1), 4000);
+  $("play").textContent = playing ? "Pause" : "Lecture";
+}
+$("prev").onclick = () => { go(idx - 1); restart(); };
+$("next").onclick = () => { go(idx + 1); restart(); };
+$("play").onclick = () => { playing = !playing; restart(); };
+
+// Glisser au doigt sur téléphone
+let sx = null;
+$("track").addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
+$("track").addEventListener("touchend", e => {
+  if (sx === null) return;
+  const dx = e.changedTouches[0].clientX - sx;
+  if (Math.abs(dx) > 40) { go(idx + (dx < 0 ? 1 : -1)); restart(); }
+  sx = null;
+});
+
+$("copy").onclick = () => {
+  const text = cur.cap + "\n\n" + cur.tags;
+  const done = () => { $("copy").textContent = "Copiée"; setTimeout(() => $("copy").textContent = "Copier la légende", 1600); };
+  try {
+    navigator.clipboard.writeText(text).then(done, () => selectCap());
+  } catch (e) { selectCap(); }
+};
+function selectCap() {
+  const r = document.createRange(); r.selectNodeContents($("cap"));
+  const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  $("copy").textContent = "Texte sélectionné";
+}
+
+// Ouvre le post du jour, sinon le prochain, sinon le 1er
+const start = isOct ? (POSTS.find(p => p.d >= today.getDate()) || POSTS[0]).d : 1;
+select(start);
+</script>
