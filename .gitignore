@@ -1,3 +1,12 @@
 snake/snake
 snake/*.o
 snake/police.h
+pressing/smartpress
+pressing/smartpress.exe
+pressing/src/*.o
+pressing/sqlite/*.o
+pressing/*.db
+pressing/*.db-journal
+pressing/recus/
+pressing/exports/
+pressing/sauvegardes/
