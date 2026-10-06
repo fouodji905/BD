@@ -83,7 +83,7 @@ header { display: grid; gap: 12px; max-width: 70ch; }
 .track { display: flex; height: 100%; transition: transform .5s ease; }
 .slide { flex: 0 0 100%; height: 100%; padding: 11% 10%; display: flex; flex-direction: column; justify-content: center; gap: 14px; position: relative; color: #fff; }
 .slide .big { font-family: var(--font-display); font-size: clamp(1.35rem, 6.2vw, 1.9rem); line-height: 1.18; text-wrap: balance; }
-.slide .small { font-size: clamp(.86rem, 3.6vw, 1rem); line-height: 1.45; opacity: .92; max-width: 32ch; }
+.slide .small { white-space: pre-line; font-size: clamp(.86rem, 3.6vw, 1rem); line-height: 1.45; opacity: .92; max-width: 32ch; }
 .slide .ref { font-family: var(--font-mono); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
 .slide .count { position: absolute; top: 12px; right: 12px; font-family: var(--font-mono); font-size: .68rem; background: rgba(0,0,0,.35); padding: 2px 8px; border-radius: 99px; }
 .slide .swipe { position: absolute; bottom: 14px; right: 16px; font-size: .74rem; opacity: .8; }
@@ -127,7 +127,7 @@ footer { font-size: .82rem; color: var(--muted); max-width: 75ch; }
   <header>
     <span class="eyebrow">Plan de contenu · Octobre 2026</span>
     <h1>Lumière d'Octobre</h1>
-    <p class="muted">17 publications pour sensibiliser sans montrer ton visage : des carrousels à faire défiler, des reels en texte animé et des stories. Clique sur un jour du calendrier pour voir les images défiler, avec la légende prête à copier.</p>
+    <p class="muted">18 publications pour sensibiliser sans montrer ton visage : des carrousels à faire défiler, des reels en texte animé et des stories. Clique sur un jour du calendrier pour voir les images défiler, avec la légende prête à copier.</p>
     <div class="legend" id="legend"></div>
   </header>
 
@@ -279,6 +279,22 @@ const POSTS = [
     ],
     cap: "Le pardon est l'une des choses les plus difficiles de la foi. 🕯️\nPierre pensait être généreux en proposant sept fois. Jésus lui raconte l'histoire d'un homme à qui on a remis une dette immense, mais qui refuse de remettre une petite dette à son tour (Matthieu 18:21-35).\n\nLe pardon ne nie pas la blessure. Il ne t'oblige pas à rester près de quelqu'un qui te fait du mal. Mais il te libère : tu remets la justice à Dieu et tu arrêtes de porter ce poids seul.\n\nPardonner prend parfois du temps. Commence ce soir par une prière, même courte.\n\nEnregistre ce post et envoie-le à quelqu'un qui en a besoin 🙏",
     tags: "#pardon #matthieu18 #grace #guerison #foi #chretien #evangile" },
+
+  { d: 6, f: "carrousel", bg: "bg-or", title: "Enfants de Dieu par la foi", hour: "19 h",
+    visual: "Bible ouverte sur Galates 3, lumière du matin, un stylo pour souligner les versets.",
+    slides: [
+      ["Méditation · Galates 3:19-29", "Si on n'est pas sauvé par la loi, à quoi sert-elle ? Paul répond."],
+      ["« Pourquoi donc la loi ? Elle a été donnée ensuite à cause des transgressions. »", "La loi n'est pas mauvaise. Elle montre le mal, mais elle ne peut pas le guérir.", "Galates 3:19"],
+      ["« La loi a été comme un pédagogue pour nous conduire à Christ. »", "", "Galates 3:24"],
+      ["Le pédagogue, dans l'Antiquité :", "un serviteur qui accompagnait l'enfant à l'école, le surveillait et le corrigeait. Son rôle prenait fin quand l'enfant devenait adulte."],
+      ["« Vous êtes tous fils de Dieu par la foi en Jésus-Christ. »", "La loi te surveillait comme un enfant sous tutelle. En Christ, Dieu te reçoit comme son enfant (v. 25).", "Galates 3:26"],
+      ["« Vous tous, qui avez été baptisés en Christ, vous avez revêtu Christ. »", "Quand Dieu te regarde, il voit d'abord Christ sur toi. Ton passé ne te définit plus.", "Galates 3:27"],
+      ["« Il n'y a plus ni Juif ni Grec, ni esclave ni libre, ni homme ni femme ; tous vous êtes un en Jésus-Christ. »", "Personne n'a plus de valeur qu'un autre devant Dieu. Fin du mépris, fin du complexe.", "Galates 3:28"],
+      ["« Si vous êtes à Christ, vous êtes héritiers selon la promesse. »", "Tu n'es pas un invité toléré. Tu es de la famille.", "Galates 3:29"],
+      ["Pour méditer aujourd'hui :", "1. Est-ce que j'essaie encore de gagner l'amour de Dieu ?\n2. Qui est-ce que je regarde de haut ?\n3. Qu'est-ce que ça change, de me savoir enfant de Dieu ?"]
+    ],
+    cap: "On continue notre lecture de Galates 3. 📖\nSamedi, on a vu qu'on est sauvé par la foi, pas par nos efforts. Aujourd'hui Paul répond à la question suivante : alors, à quoi sert la loi ?\n\nSa réponse : la loi était comme un pédagogue, le serviteur qui accompagnait l'enfant jusqu'à l'âge adulte. Elle nous a conduits jusqu'à Christ. Maintenant, par la foi, nous ne sommes plus des enfants sous surveillance, mais des fils et des filles de Dieu, et tous un en lui.\n\nPrends 5 minutes pour lire Galates 3:19-29 en entier, puis réponds à l'une des 3 questions de la dernière image en commentaire 👇",
+    tags: "#galates3 #enfantsdedieu #parlafoi #grace #meditation #etudebiblique #foi" },
 
   { d: 7, f: "carrousel", bg: "bg-nuit", title: "Prier quand on ne sait pas quoi dire", hour: "21 h",
     visual: "Bougie allumée la nuit, chapelet ou Bible posés sur une table.",

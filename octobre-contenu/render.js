@@ -14,7 +14,7 @@ const fs = require("fs");
     #render { position: fixed; inset: 0; z-index: 99; width: 1080px; height: 1350px; }
     #render .slide { width: 1080px; height: 1350px; padding: 140px 110px; gap: 40px; }
     #render .big { font-size: 78px; line-height: 1.16; }
-    #render .small { font-size: 40px; max-width: 26ch; }
+    #render .small { font-size: 40px; max-width: 26ch; white-space: pre-line; }
     #render .ref { font-size: 30px; }
     #render .count { font-size: 26px; top: 40px; right: 40px; padding: 6px 18px; }
     #render .swipe { font-size: 28px; bottom: 48px; right: 56px; }
